@@ -1,0 +1,19 @@
+{
+  "name": "reads3",
+  "version": "1.0.0",
+  "main": "./dist/index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.97",
+    "@types/node": "^17.0.33",
+    "typescript": "^4.6.4"
+  },
+  "dependencies": {
+    "@aws-sdk/client-s3": "^3.88.0"
+  },
+  "scripts": {
+    "build": "./build.sh",
+    "deploy": "sam deploy --capabilities CAPABILITY_NAMED_IAM",
+    "deploy:guided": "sam deploy --capabilities CAPABILITY_NAMED_IAM --guided"
+  }
+}

@@ -1,0 +1,54 @@
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  ReadS3Function:
+    DependsOn: ReadS3Policy
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: read-s3
+      Role: !GetAtt ReadS3Role.Arn
+
+      PackageType: Zip
+      Runtime: nodejs16.x
+      CodeUri: ./build
+      Handler: dist/index.handler
+
+      FunctionUrlConfig:
+        AuthType: NONE
+        Cors:
+          AllowOrigins:
+            - "*"
+
+  ReadS3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: rafaeltmbr-read-s3
+      AccessControl: PublicRead
+
+  ReadS3Role:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: read-s3
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - sts:AssumeRole
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+
+  ReadS3Policy:
+    Type: AWS::IAM::Policy
+    Properties:
+      PolicyName: read-s3
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Action:
+              - S3:GetObject
+            Resource:
+              - !Join ["/", [!GetAtt ReadS3Bucket.Arn, "*"]]
+      Roles:
+        - !Ref ReadS3Role
